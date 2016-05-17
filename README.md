@@ -1,2 +1,1 @@
-Initial commit with contributors
-test 1
+Initial commit
