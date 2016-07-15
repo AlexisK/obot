@@ -9,8 +9,48 @@
 #   These are from the scripting documentation: https://github.com/github/hubot/blob/master/docs/scripting.md
 
 module.exports = (robot) ->
+ robot.respond /env (.*) deploy (.*)$/i, (msg) ->
+    env = msg.match[1]
+    branch = msg.match[2]
+    @exec = require('child_process').exec
+    command = "ssh centos@#{env} 'cd /home/hybris_5_6/repos/everything5pounds/ && git fetch --all && git checkout #{branch} && git reset --hard origin/#{branch} && git pull origin #{branch} && cd /home/hybris_5_6/hybris/bin/platform/ && . ./setantenv.sh && ant clean all'"
+    msg.send "Environment #{env} start deploy with branch #{branch}."
 
-  # robot.hear /badger/i, (res) ->
+    @exec command,{maxBuffer: 1024 * 5000}, (error, stdout, stderr) ->
+      msg.send stdout
+      if stderr
+        msg.send "ERROR (stderr): " + stderr
+      if error
+        msg.send "ERROR (error)" + error
+
+ robot.respond /env (.*) restart$/i, (msg) ->
+    env = msg.match[1]
+    @exec = require('child_process').exec
+    command = "ssh centos@#{env} 'cd /home/hybris_5_6/hybris/bin/platform/ && . ./setantenv.sh && ant clean all'"
+    msg.send "Enviroment #{env} restarting"
+
+    @exec command,{maxBuffer: 1024 * 5000}, (error, stdout, stderr) ->
+      msg.send stdout
+      if stderr
+        msg.send "Error on restart - " + stderr
+      if error
+        msg.send "Error " + error
+ robot.respond /env (.*) init (.*)$/i, (msg) ->
+    env = msg.match[1]
+    branch = msg.match[2]
+    @exec = require('child_process').exec
+    command = "ssh centos@#{env} 'cd /home/hybris_5_6/repos/everything5pounds/ && git fetch --all && git checkout #{branch} && git reset --hard origin/#{branch} && git pull       origin #{branch} && cd /home/hybris_5_6/hybris/bin/platform/ && . ./setantenv.sh && /home/hybris_5_6/hybris/bin/platform/hybrisserver.sh stop && ant clean all initialize && /home/hybris_5_6/hybris/bin/platform/hybrisserver.sh start"
+    msg.send "Enviroment #{env} start initialize with branch #{branch}"
+
+    @exec command,{maxBuffer: 1024 * 5000}, (error, stdout, stderr) ->
+      msg.send stdout
+      if stderr
+        msg.send "Error with Initialize:" + stderr
+      if error
+        msg.send "Error " + error
+
+
+# robot.hear /badger/i, (res) ->
   #   res.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
   #
   # robot.respond /open the (.*) doors/i, (res) ->
