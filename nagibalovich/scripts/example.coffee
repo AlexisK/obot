@@ -16,12 +16,12 @@ module.exports = (robot) ->
     command = "ssh centos@#{env} 'cd /home/hybris_5_6/repos/everything5pounds/ && git fetch --all && git checkout #{branch} && git reset --hard origin/#{branch} && git pull origin #{branch} && cd /home/hybris_5_6/hybris/bin/platform/ && . ./setantenv.sh && ant clean all'"
     msg.send "Environment #{env} start deploy with branch #{branch}."
 
-    @exec command,{maxBuffer: 1024 * 5000}, (error, stdout, stderr) ->
-      msg.send stdout
-      if stderr
-        msg.send "ERROR (stderr): " + stderr
-      if error
-        msg.send "ERROR (error)" + error
+    @exec command,{maxBuffer: 1024 * 50000}, (error, stdout, stderr) ->
+      msg.reply "Environment #{env} with branch #{branch} deploy finished and be available in 3 minutes"
+#      if stderr
+#        msg.send "ERROR (stderr): " + stderr
+#      if error
+#        msg.send "ERROR (error)" + error
 
  robot.respond /env (.*) restart$/i, (msg) ->
     env = msg.match[1]
@@ -29,12 +29,12 @@ module.exports = (robot) ->
     command = "ssh centos@#{env} 'cd /home/hybris_5_6/hybris/bin/platform/ && . ./setantenv.sh && ant clean all'"
     msg.send "Enviroment #{env} restarting"
 
-    @exec command,{maxBuffer: 1024 * 5000}, (error, stdout, stderr) ->
-      msg.send stdout
-      if stderr
-        msg.send "Error on restart - " + stderr
-      if error
-        msg.send "Error " + error
+    @exec command,{maxBuffer: 1024 * 50000}, (error, stdout, stderr) ->
+      msg.reply "Enviroment #{env} restarted and be available in 3 minutes"
+ #     if stderr
+ #       msg.send "Error on restart - " + stderr
+ #     if error
+ #       msg.send "Error " + error
  robot.respond /env (.*) init (.*)$/i, (msg) ->
     env = msg.match[1]
     branch = msg.match[2]
@@ -42,12 +42,12 @@ module.exports = (robot) ->
     command = "ssh centos@#{env} 'cd /home/hybris_5_6/repos/everything5pounds/ && git fetch --all && git checkout #{branch} && git reset --hard origin/#{branch} && git pull       origin #{branch} && cd /home/hybris_5_6/hybris/bin/platform/ && . ./setantenv.sh && /home/hybris_5_6/hybris/bin/platform/hybrisserver.sh stop && ant clean all initialize && /home/hybris_5_6/hybris/bin/platform/hybrisserver.sh start"
     msg.send "Enviroment #{env} start initialize with branch #{branch}"
 
-    @exec command,{maxBuffer: 1024 * 5000}, (error, stdout, stderr) ->
-      msg.send stdout
-      if stderr
-        msg.send "Error with Initialize:" + stderr
-      if error
-        msg.send "Error " + error
+    @exec command,{maxBuffer: 1024 * 50000}, (error, stdout, stderr) ->
+      msg.reply "Enviroment #{env} finish initialize with branch #{branch}"
+  #    if stderr
+  #      msg.send "Error with Initialize:" + stderr
+  #    if error
+  #      msg.send "Error " + error
 
 
 # robot.hear /badger/i, (res) ->
