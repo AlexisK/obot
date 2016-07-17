@@ -39,7 +39,7 @@ module.exports = (robot) ->
     env = msg.match[1]
     branch = msg.match[2]
     @exec = require('child_process').exec
-    command = "ssh centos@#{env} 'cd /home/hybris_5_6/repos/everything5pounds/ && git fetch --all && git checkout #{branch} && git reset --hard origin/#{branch} && git pull       origin #{branch} && cd /home/hybris_5_6/hybris/bin/platform/ && . ./setantenv.sh && /home/hybris_5_6/hybris/bin/platform/hybrisserver.sh stop && ant clean all initialize && /home/hybris_5_6/hybris/bin/platform/hybrisserver.sh start"
+    command = "ssh centos@#{env} 'cd /home/hybris_5_6/repos/everything5pounds/ && git fetch --all && git checkout #{branch} && git reset --hard origin/#{branch} && git pull       origin #{branch} && cd /home/hybris_5_6/hybris/bin/platform/ && . ./setantenv.sh && /home/hybris_5_6/hybris/bin/platform/hybrisserver.sh stop && ant clean all initialize && /home/hybris_5_6/hybris/bin/platform/hybrisserver.sh start'"
     msg.send "Enviroment #{env} start initialize with branch #{branch}"
 
     @exec command,{maxBuffer: 1024 * 50000}, (error, stdout, stderr) ->
