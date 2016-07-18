@@ -1,0 +1,11 @@
+
+window.config = {
+    locale: "en-US",
+    slack: {
+        token: "xoxp-58448061859-58491578132-58875948864-0f9148f6a1"
+    },
+    version: {
+        db: 2
+    },
+    reconnect_timeout: 5000
+}
