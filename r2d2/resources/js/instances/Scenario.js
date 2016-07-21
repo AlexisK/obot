@@ -1,4 +1,0 @@
-
-MODEL.Scenario.declare.push(() => {
-    
-});
