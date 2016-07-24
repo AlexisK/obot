@@ -1,4 +1,4 @@
-const { JIRA_USER, JIRA_PASSWORD } = require('../../settings.global.json');
+const { JIRA_USER, JIRA_PASSWORD } = require('../../settings.json');
 
 module.exports = {
   protocol: 'https',
