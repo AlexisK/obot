@@ -11,18 +11,6 @@ const formatJiraUser = function(user) {
   return user;
 };
 
-const createSlackFields = function(rules) {
-  var fieldList = [];
-  forOwn(rules, (value, key) => {
-    fieldList.push({
-      title: key,
-      value: value,
-      short: true
-    });
-  });
-  return fieldList;
-};
-
 module.exports = new Formatter(issue => {
   var req = {
     color: '#eee'
@@ -31,7 +19,7 @@ module.exports = new Formatter(issue => {
   issue.fields.reporter = formatJiraUser(issue.fields.reporter);
   issue.fields.assignee = formatJiraUser(issue.fields.assignee);
 
-  req.fields = createSlackFields({
+  req.fields = require('../../../utils/format-slack-fields.util')({
     'Reporter' : issue.fields.reporter.displayName,
     'Assignee' : issue.fields.assignee.displayName,
     'Severity' : issue.fields.priority.name,
