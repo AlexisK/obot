@@ -1,5 +1,5 @@
 const Message = require('../../models/message.model');
-const {name, image} = require('./slack.config');
+const { name, image } = require('./slack.config');
 
 module.exports = class SlackMessage extends Message {
   onData() {
@@ -17,7 +17,7 @@ module.exports = class SlackMessage extends Message {
       icon_url: image,
       text
     };
-    
+
     this.bot.reply(this.data, req);
   }
 
