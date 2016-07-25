@@ -4,25 +4,24 @@ const forOwn = require('lodash/forOwn');
  * Parses dict with comma-separated keys
  *
  * input
- *  parseMappedDict({'x':1,'y,z':2});
+ *  parseMappedDict({x: 1,'y, z': 2});
  * output
- *  {'x':1,'y':2,'z':2}
+ *  {x: 1, y: 2,z :2}
  *
  * @param dict
  * @returns {*}
  */
 function parseMappedDict(dict) {
-  if ( dict.constructor == Object ) {
+  if (dict.constructor == Object) {
     var result = {};
-    forOwn(dict, (v,keys) => {
-      if ( v.constructor == Object ) {
-        v = parseMappedDict(v);
+    forOwn(dict, (value, keys) => {
+      if (value.constructor == Object) {
+        value = parseMappedDict(value);
       }
-      keys = keys.split(',');
+      keys = keys.split(/,\s*/g);
       keys.forEach(key => {
-        result[key] = v;
+        result[key] = value;
       });
-
     });
     return result;
   }

@@ -1,10 +1,10 @@
 module.exports = class Message {
   constructor(data) {
     this.data = data;
-    this.on_data();
+    this.onData();
   }
 
-  on_data() {}
+  onData() {}
   replyText(message) {}
   replyFormattedMessage(message) { this.replyText(message); }
 

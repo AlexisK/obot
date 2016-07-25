@@ -1,21 +1,26 @@
-const merge           = require('lodash/merge');
+const merge = require('lodash/merge');
 const parseMappedDict = require('../utils/parse-mapped-dict.util');
 
-class Handler {
+let messageStack;
+
+module.exports = class Handler {
   constructor(data) {
+    messageStack = messageStack || ['on_direct', 'on_mention', 'on_ambient'];
+    Handler.mapping = Handler.mapping || {
+        on_direct: [],
+        on_mention: [],
+        on_ambient: []
+      };
+
     Object.assign(this, merge({
-      'pattern' : ''
+      pattern: ''
     }, parseMappedDict(data)));
 
-    if ( this.on_direct ) {
-      Handler.mapping.on_direct.push(this);
-    }
-    if ( this.on_mention ) {
-      Handler.mapping.on_mention.push(this);
-    }
-    if ( this.on_ambient ) {
-      Handler.mapping.on_ambient.push(this);
-    }
+    messageStack.forEach(type => {
+      if (this[type]) {
+        Handler.mapping[type].push(this);
+      }
+    });
   }
 
   match(content) {
@@ -23,16 +28,8 @@ class Handler {
   }
 
   parse(message, type) {
-    if(this.match(message.text)) {
+    if (this.match(message.text)) {
       this[type](message);
     }
   }
-}
-
-Handler.mapping = {
-  on_direct  : [],
-  on_mention : [],
-  on_ambient : []
 };
-
-module.exports = Handler;

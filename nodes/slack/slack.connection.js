@@ -1,12 +1,12 @@
-const Handler      = require('../../models/handler.model');
-const Connection   = require('../../models/connection.model');
+const Handler = require('../../models/handler.model');
+const Connection = require('../../models/connection.model');
 const SlackMessage = require('./slack-message.model');
-const SlackBot     = require('botkit').slackbot;
-const {token}     = require('./slack.config');
+const SlackBot = require('botkit').slackbot;
+const { token }     = require('./slack.config');
 
 const connection = new Connection('slack', () => {
-  const instance = SlackBot({debug : false});
-  const bot      = instance.spawn({
+  const instance = SlackBot({debug: false});
+  const bot = instance.spawn({
     token
   }).startRTM();
 
