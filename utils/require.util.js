@@ -1,6 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 
+const formatFileName = function(filename) {
+  let pieces = filename.split('.');
+  pieces.pop();
+
+  return pieces[0] + pieces.slice(1).map(word => { return word.charAt(0).toUpperCase() + word.slice(1); }).join('');
+};
+
 module.exports = function requireModules(dir) {
   const modules = {};
 
@@ -8,7 +15,7 @@ module.exports = function requireModules(dir) {
     .forEach((file) => {
        if (file === 'index.js') { return; }
 
-       modules[file] = require(path.resolve(dir, file));
+       modules[formatFileName(file)] = require(path.resolve(dir, file));
     });
 
   return modules;
