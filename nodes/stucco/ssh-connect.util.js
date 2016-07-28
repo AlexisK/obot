@@ -3,9 +3,9 @@ const { user, agent } = require('./ssh.config');
 
 module.exports = function connectSSH(message, env, command, args, execString, okMessage) {
   var req = new SSH({
-    user,
+    user: 'centos',
     host: env,
-    agent,
+    agent: process.env.SSH_AUTH_SOCK,
     agentForward: true
   });
   req.on('error', err => {
