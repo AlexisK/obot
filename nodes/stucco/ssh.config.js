@@ -1,6 +1,6 @@
 const { SSH_USER } = require('../../settings.json');
 
-module.export = {
+module.exports = {
   user: SSH_USER,
   agent: process.env.SSH_AUTH_SOCK
 };
