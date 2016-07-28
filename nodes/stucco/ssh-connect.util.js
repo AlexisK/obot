@@ -17,15 +17,15 @@ module.exports = function connectSSH(message, env, command, args, execString, ok
   req.exec(execString, {
     exit: code => {
       console.log('SSH: exit\n',code);
-      message.replyText(okMessage);
+      //message.replyText(okMessage);
     },
     err: stdout => {
       console.error('SSH: err\n',stdout);
-      message.replyText(stdout);
+      //message.replyText(stdout);
     },
     out: stdout => {
-      console.error('SSH: out\n',stdout);
-      message.replyText(stdout);
+      console.error('SSH: out');
+      message.replyText(okMessage);
     }
   });
 

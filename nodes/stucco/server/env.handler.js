@@ -14,7 +14,7 @@ const workers = {
   deploy: (message, env, command, args) => {
     let branch = args.split(/\s+/g)[0];
     connectSSH(message, env, command, args,
-      `cd /home/hybris_5_7/repos/everything5pounds/ && git fetch --all && git checkout ${branch} && git reset --hard origin/#${branch} && git pull origin #${branch} && cd /home/hybris_5_7/hybris/bin/platform/ && . ./setantenv.sh && ant clean all`,
+      `cd /home/hybris_5_7/repos/everything5pounds/ && git fetch --all && git checkout ${branch} && git reset --hard origin/${branch} && git pull origin ${branch} && cd /home/hybris_5_7/hybris/bin/platform/ && . ./setantenv.sh && ant clean all`,
       `Deploy ${branch}`
     );
   },
