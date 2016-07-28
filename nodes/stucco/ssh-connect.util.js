@@ -6,7 +6,7 @@ module.exports = function connectSSH(message, env, command, args, execString, ok
     user,
     host: env,
     agent,
-    agentForward: true
+    agentForward: false
   };
   let req = new SSH(params);
   req.on('error', err => {
