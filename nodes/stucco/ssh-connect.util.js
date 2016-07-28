@@ -31,7 +31,7 @@ module.exports = function connectSSH(message, env, command, args, execString, ok
   try {
     req.start();
   } catch(err) {
-    console.error(err);
+    console.error('SSH: failed to start\n',{user, agent},'\n', err);
     message.replyText(err.toString());
   }
 };
