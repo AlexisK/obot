@@ -1,13 +1,29 @@
 var orm = require('orm');
+var MigrateTask = require('migrate-orm2');
+var fs = require('fs');
 
 const {base, user, pass} = require('./config').database;
 
 const scope = {
-  instance     : orm,
-  db           : orm.connect(`postgres://${user}:${pass}@localhost/${base}`),
-  init         : () => new Promise((resolve, reject) => {
 
-    require('../utils/require.util')(require('path').resolve(__dirname, 'models'));
+  instance : orm,
+  db       : orm.connect(`postgres://${user}:${pass}@localhost/${base}`),
+
+
+  migrate : (direction = 'up') => new Promise((resolve, reject) => {
+    var migration = new MigrateTask(scope.db.driver);
+
+    migration[direction]((err, ok) => {
+      if ( err ) {
+        reject(err);
+        throw err;
+      }
+      resolve(ok);
+    })
+  }),
+
+
+  init : () => new Promise((resolve, reject) => {
 
     scope.db.on('connect', err => {
       if ( err ) {
@@ -20,26 +36,27 @@ const scope = {
         if ( err ) {
           throw err;
         }
-        console.log('Database synchronized');
+
+        require('../utils/merge-migrations.util')(require('path').resolve(__dirname, 'basic_migrations'));
         resolve(scope.db, scope.model);
       });
     });
 
   }),
-  prepare      : {},
-  model        : {},
-  declareModel : function (model, schema, params) {
-    return scope.prepare[model] = new Promise((resolve, reject) => {
-      scope.db.on('connect', err => {
-        if ( err ) {
-          reject(err);
-        } else {
-          resolve(scope.model[model] = scope.db.define(model, schema, params));
-        }
-      });
-    });
 
-  }
+
+  reset : () => new Promise((resolve, reject) => {
+    scope.db.on('connect', err => {
+      if ( err ) {
+        console.error('Failed to connect db');
+        reject(err);
+        throw err;
+      }
+
+      scope.migrate('down');
+    });
+  })
+
 };
 
 module.exports = scope;
