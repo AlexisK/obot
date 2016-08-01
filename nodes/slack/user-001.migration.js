@@ -7,5 +7,5 @@ exports.up = function(next) {
 };
 
 exports.down = function(next) {
-  this.dropColumn('users','slack_id');
+  this.dropColumn('users', 'slack_id', next);
 };

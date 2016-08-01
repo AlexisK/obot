@@ -24,7 +24,7 @@ const scope = {
 
 
   init : () => new Promise((resolve, reject) => {
-
+    console.log(scope);
     scope.db.on('connect', err => {
       if ( err ) {
         console.error('Failed to connect db');
