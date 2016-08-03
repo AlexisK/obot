@@ -51,13 +51,48 @@ const scope = {
 
   defineModel(name, schema, params, onModelDeclared) {
     scope._pendingModels.push((resolve, reject) => {
-      console.log(`Declare ${name}`);
       scope.models[name] = scope.db.define(name, schema, params);
       resolve(scope.db, scope.models);
     });
     if ( onModelDeclared ) {
       scope._pendingAssociations.push(onModelDeclared);
     }
+  },
+
+  logErrors(err) {
+    if ( err && err.severity ) {
+      console.error(`\tORM ${err.severity}: [ table: ${err.table}\tconstraint: ${err.constraint}\t${err.detail}]`);
+      return true;
+    }
+    return false;
+  },
+
+  fetchItem(model, data, findData) {
+    return new Promise((resolve, reject) => {
+      scope.models[model].create(data, (err, success) => {
+        if ( success ) {
+          resolve(success);
+        } else {
+          data = findData || data;
+          if ( data.constructor == Number ) {
+            scope.models[model].get(data, (err, result) => {
+              scope.logErrors(err);
+              result && resolve(result) || reject(null);
+            });
+          } else if ( data.id ) {
+            scope.models[model].get(data.id, (err, result) => {
+              scope.logErrors(err);
+              result && resolve(result) || reject(null);
+            });
+          } else {
+            scope.models[model].find(data, (err, result) => {
+              scope.logErrors(err);
+              result && result[0] && resolve(result[0]) || reject(null);
+            });
+          }
+        }
+      });
+    });
   }
 
 };

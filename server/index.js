@@ -1,3 +1,6 @@
+const Hapi = require('hapi');
+
 module.exports = {
-  orm: require('./orm.service')
+  server : new Hapi.Server(),
+  orm    : require('./orm.service')
 };
