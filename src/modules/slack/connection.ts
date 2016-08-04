@@ -9,7 +9,7 @@ export const scope : any = {
   webClient: new WebClient(settings.token)
 };
 
-export const connection  = new Connection('Slack', function () {
+export const connection = new Connection('Slack', function () {
   const rtmClient = new RtmClient(settings.token, {
     logLevel : 'error',
     dataStore: new MemoryDataStore()
@@ -28,12 +28,21 @@ export const connection  = new Connection('Slack', function () {
   // handling response message
   rtmClient.on(RTM_EVENTS.MESSAGE, (response : any) => {
     const regexp = /<@(U[A-Z0-9]+)>/g;
-    let message  = new SlackMessage({
-      text       : response.text,
-      channel    : response.channel,
-      author     : rtmClient.dataStore.getUserById(response.user),
-      mentions   : {},
-      bot_mention: false
+    const author = rtmClient.dataStore.getUserById(response.user);
+    if (!author) {
+      return 0;
+    }
+
+    const authorChannel = rtmClient.dataStore.getDMByName(author.name);
+
+    let message = new SlackMessage({
+      author,
+      authorChannel: authorChannel.id,
+      text         : response.text,
+      channel      : response.channel,
+      ts           : response.ts,
+      mentions     : {},
+      bot_mention  : false
     });
 
 

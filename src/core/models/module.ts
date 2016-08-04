@@ -1,5 +1,5 @@
 export class Module {
-  public connection: any;
+  public connection: any = {connect:() => {}};
 
   constructor(obj: any) {
     Object.assign(this, obj);

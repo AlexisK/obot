@@ -5,6 +5,7 @@ export const pingHandler = new Handler({
 
   'direct, mention': function (message) {
     message.replyFormattedMessage(require('./ping.formatter').format('pong'));
+    message.replyDirect('pong!');
   },
 
   'ambient': function (message) {

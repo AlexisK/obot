@@ -3,8 +3,7 @@ const { JIRA_USER, JIRA_PASSWORD } = require('../../../settings.json');
 export const settings = {
   protocol: 'https',
   host: 'camdenmarket.atlassian.net',
-  port: '443',
-  user: JIRA_USER,
+  username: JIRA_USER,
   password: JIRA_PASSWORD,
   apiVersion: '2',
   path: {
