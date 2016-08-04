@@ -1,0 +1,7 @@
+{
+  "globalDependencies": {
+    "node": "registry:dt/node#6.0.0+20160621231320",
+    "lodash": "github:DefinitelyTyped/DefinitelyTyped/lodash/lodash.d.ts#672afd8f7b09d839b61eeb4867753876cf79c8b6",
+    "hapi": "github:DefinitelyTyped/DefinitelyTyped/hapi/hapi.d.ts#c54072093a1a3a5c28f74dd7b8a57f45d061e536"
+  }
+}
