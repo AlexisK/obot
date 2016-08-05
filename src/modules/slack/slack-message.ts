@@ -3,25 +3,22 @@ import {Message} from '../../core/models/message';
 import {scope} from './connection';
 import {settings} from './settings';
 
+
 export class SlackMessage extends Message {
 
   private attachments : any[] = [];
   private _promises : any[]   = [];
   private _interval : any     = null;
 
-  public text : string;
+  // there are other fields, but they inherit from Message
   public channel : string;
   public authorChannel : string;
-  public author : any;
-  public mentions : any;
-  public bot_mention : boolean;
-  public ts : number;
 
   static _getReq(params? : any, data? : any) {
     return merge({
-      as_user : false,
-      username: params.name || settings.name,
-      icon_url: params.image || settings.image,
+      as_user  : false,
+      username : params.name || settings.name,
+      icon_url : params.image || settings.image,
     }, data);
   }
 
@@ -34,7 +31,7 @@ export class SlackMessage extends Message {
   }
 
   _replyFormattedMessageStack(params) {
-    var req = SlackMessage._getReq(params, {attachments: this.attachments});
+    var req = SlackMessage._getReq(params, {attachments : this.attachments});
 
     scope.webClient.chat.postMessage(params.channel || this.channel, '', req, (err, msg) => {
       this._promises.forEach(resolver => resolver(new SlackMessage(msg)));
@@ -55,7 +52,16 @@ export class SlackMessage extends Message {
 
   replyDirect(req : any) {
     return this.reply(req, {
-      channel: this.authorChannel
+      channel : this.authorChannel
+    });
+  }
+
+  addReaction(reaction : string) {
+    return new Promise((resolve, reject) => {
+      scope.webClient.reactions.add(reaction, {
+        channel: this.channel,
+        timestamp: this.ts
+      }, resolve);
     });
   }
 

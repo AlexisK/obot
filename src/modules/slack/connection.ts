@@ -6,13 +6,13 @@ import {settings} from './settings';
 
 
 export const scope : any = {
-  webClient: new WebClient(settings.token)
+  webClient : new WebClient(settings.token)
 };
 
 export const connection = new Connection('Slack', function () {
   const rtmClient = new RtmClient(settings.token, {
-    logLevel : 'error',
-    dataStore: new MemoryDataStore()
+    logLevel  : 'error',
+    dataStore : new MemoryDataStore()
   });
   scope.rtmClient = rtmClient;
 
@@ -37,26 +37,25 @@ export const connection = new Connection('Slack', function () {
 
     let message = new SlackMessage({
       author,
-      authorChannel: authorChannel.id,
-      text         : response.text,
-      channel      : response.channel,
-      ts           : response.ts,
-      mentions     : {},
-      bot_mention  : false
+      authorChannel : authorChannel.id,
+      text          : response.text,
+      channel       : response.channel,
+      ts            : response.ts,
+      mentions      : {},
+      botMention    : false
     });
-
 
     for (let match; match = regexp.exec(message.text);) {
       let user = rtmClient.dataStore.getUserById(match[1]);
 
       message.mentions[match[1]] = user;
       if (user === scope.user) {
-        message.bot_mention = true;
+        message.botMention = true;
       }
     }
 
 
-    if (message.bot_mention) {
+    if (message.botMention) {
       Handler.map.mention.forEach(handler => handler.parse(message, 'mention'));
     } else {
       Handler.map.ambient.forEach(handler => handler.parse(message, 'ambient'));

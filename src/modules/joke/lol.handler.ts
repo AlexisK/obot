@@ -1,7 +1,7 @@
 import {Handler, Message} from '../../core/models';
 
 export const lolHandler = new Handler({
-  pattern: /(^|\W)(lol|лол)($|\W)/gi,
+  pattern: /^[ол\s]+$/gi,
   ambient(message : Message) {
     message.reply('я люблю спамить!', {
       name: message.author.real_name,
