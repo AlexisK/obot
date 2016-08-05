@@ -1,9 +1,10 @@
-import {Handler, Message} from '../../core/models';
+import {Handler} from '../../core/models';
+import {SlackMessage} from 'slack-message';
 
 export const botDushHandler = new Handler({
   pattern: /./,
-  ambient(message: Message) {
-    if ( message.author.is_bot || message.author.real_name === 'slackbot') {
+  ambient(message: SlackMessage) {
+    if ( message.authorSlack && (message.authorSlack.is_bot || message.authorSlack.real_name === 'slackbot') ) {
       message.addReaction('poop');
     }
   }

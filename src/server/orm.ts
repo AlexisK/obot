@@ -7,6 +7,7 @@ class ORM {
 
   private _pendingModels : any[]       = [];
   private _pendingAssociations : any[] = [];
+  private _initPromise: Promise;
 
   public models : any   = {};
   public instance : any = ormPackage;
@@ -16,7 +17,7 @@ class ORM {
   static ormModels : any;
 
   public init() {
-    return new Promise((resolve, reject) => {
+    return this._initPromise || (this._initPromise = new Promise((resolve, reject) => {
       this.db.on('connect', err => {
 
         //Connect
@@ -41,13 +42,14 @@ class ORM {
               console.log(info);
             }
             //Ready
+            console.log('ready');
             resolve(this.db, this.models);
           });
         }));
 
       });
 
-    });
+    }));
   }
 
 
@@ -77,6 +79,7 @@ class ORM {
           resolve(success);
         } else {
           data = findData || data;
+
           if (data.constructor == Number) {
             data = {id: data};
           }
@@ -94,6 +97,11 @@ class ORM {
         }
       });
     });
+  }
+
+
+  public getAuth(user: any, roles: string[] ) : boolean {
+    return true;
   }
 
 }

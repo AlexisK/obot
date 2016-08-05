@@ -13,6 +13,7 @@ export class SlackMessage extends Message {
   // there are other fields, but they inherit from Message
   public channel : string;
   public authorChannel : string;
+  public authorSlack: any;
 
   static _getReq(params? : any, data? : any) {
     return merge({

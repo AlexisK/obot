@@ -9,6 +9,6 @@ export const pingHandler = new Handler({
   },
 
   'ambient': function (message) {
-    message.replyText(`no pong for you today, ${message.author.real_name}!`);
+    message.replyText(`no pong for you today, ${message.author.fullName}!`);
   }
 });

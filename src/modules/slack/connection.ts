@@ -1,6 +1,7 @@
 const {RtmClient, WebClient, MemoryDataStore, RTM_EVENTS, CLIENT_EVENTS} = require('@slack/client');
 import {Connection, Handler} from '../../core/models';
 import {SlackMessage} from './slack-message';
+import {orm} from '../../server/orm';
 
 import {settings} from './settings';
 
@@ -27,16 +28,18 @@ export const connection = new Connection('Slack', function () {
 
   // handling response message
   rtmClient.on(RTM_EVENTS.MESSAGE, (response : any) => {
-    const regexp = /<@(U[A-Z0-9]+)>/g;
-    const author = rtmClient.dataStore.getUserById(response.user);
-    if (!author) {
+    const regexp      = /<@(U[A-Z0-9]+)>/g;
+    const authorSlack = rtmClient.dataStore.getUserById(response.user);
+
+    // better be sure
+    if (!authorSlack || !authorSlack.profile) {
       return 0;
     }
 
-    const authorChannel = rtmClient.dataStore.getDMByName(author.name);
+    const authorChannel = rtmClient.dataStore.getDMByName(authorSlack.name);
 
     let message = new SlackMessage({
-      author,
+      authorSlack,
       authorChannel : authorChannel.id,
       text          : response.text,
       channel       : response.channel,
@@ -54,11 +57,17 @@ export const connection = new Connection('Slack', function () {
       }
     }
 
-
-    if (message.botMention) {
-      Handler.map.mention.forEach(handler => handler.parse(message, 'mention'));
+    if (authorSlack.profile.email) {
+      orm.models.user.find({email : authorSlack.profile.email}).run((err, userList) => {
+        if (!err && userList.length) {
+          message.author = userList[0];
+          handleMessage(message);
+        } else {
+          handleMessage(message);
+        }
+      });
     } else {
-      Handler.map.ambient.forEach(handler => handler.parse(message, 'ambient'));
+      handleMessage(message);
     }
 
   });
@@ -67,3 +76,12 @@ export const connection = new Connection('Slack', function () {
 
   return rtmClient;
 });
+
+
+function handleMessage(message : SlackMessage) {
+  if (message.botMention) {
+    Handler.map.mention.forEach(handler => handler.parse(message, 'mention'));
+  } else {
+    Handler.map.ambient.forEach(handler => handler.parse(message, 'ambient'));
+  }
+}

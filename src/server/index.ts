@@ -1,5 +1,9 @@
-import { orm } from './orm';
+import Hapi = require('hapi');
+import {orm} from './orm';
+import {auth} from './auth';
 
 export const server = {
-  orm
+  orm,
+  auth,
+  hapi : new Hapi.Server()
 };

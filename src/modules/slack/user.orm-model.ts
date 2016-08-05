@@ -8,6 +8,8 @@ orm.init().then(()=> {
     avatarLarge : {type : 'text', size : 2048},
     is_bot      : {type : 'boolean'},
     is_admin    : {type : 'boolean'}
+  }, {
+    cascadeRemove: true
   });
 
   model.sync();
