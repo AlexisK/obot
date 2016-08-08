@@ -20,6 +20,9 @@ export const executeSSH = function executeSSH(message : Message,
   let lock = false;
   let req = new SSH(<any>params);
 
+  // stringBuffer to display last 10 strings of response
+  let stringBuffer = new Array(settings.stringsInBuffer).fill('');
+
   message.reply('loading...').then(statusMessage => {
     req.on('error', err => {
       console.error(`ssh env ${env} failed to ${command} with args ${args}`, err);
@@ -37,11 +40,20 @@ export const executeSSH = function executeSSH(message : Message,
         //message.reply(stdout);
       },
       out  : stdout => {
+        let strings = stdout.split('\n');
+
+        if ( strings.length >= settings.stringsInBuffer ) {
+          stringBuffer = strings.slice(strings.length-settings.stringsInBuffer);
+        } else {
+          let diff = settings.stringsInBuffer - strings.length;
+          stringBuffer = stringBuffer.slice(settings.stringsInBuffer-strings.length).concat(strings);
+        }
+
         if ( !lock ) {
           lock = true;
-          statusMessage.text = <string>stdout;
+          statusMessage.text = <string>stringBuffer.join('\n');
           statusMessage.save().then(()=>{
-            setTimeout(()=>{lock=false;}, 300);
+            setTimeout(()=>{lock=false;}, 100);
           });
         }
         //console.error('SSH: out');
