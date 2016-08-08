@@ -17,7 +17,9 @@ export const executeSSH = function executeSSH(message : Message,
     agentForward : false
   };
 
+  let lock = false;
   let req = new SSH(<any>params);
+  let statusMessage = message.reply('loading...');
 
   req.on('error', err => {
     console.error(`ssh env ${env} failed to ${command} with args ${args}`, err);
@@ -27,15 +29,23 @@ export const executeSSH = function executeSSH(message : Message,
   req.exec(execString, {
     exit : code => {
       console.log('SSH: exit\n', code);
-      message.replyText(okMessage);
+      statusMessage.text = okMessage;
+      statusMessage.save();
     },
     err  : stdout => {
       console.error('SSH: err\n', stdout);
-      //message.replyText(stdout);
+      //message.reply(stdout);
     },
     out  : stdout => {
+      if ( !lock ) {
+        lock = true;
+        statusMessage.text = stdout;
+        statusMessage.save().then(()=>{
+          setTimeout(()=>{lock=false;}, 300);
+        });
+      }
       //console.error('SSH: out');
-      //message.replyText(stdout);
+      //message.reply(stdout);
     }
   });
 
