@@ -19,40 +19,42 @@ export const executeSSH = function executeSSH(message : Message,
 
   let lock = false;
   let req = new SSH(<any>params);
-  let statusMessage = message.reply('loading...');
 
-  req.on('error', err => {
-    console.error(`ssh env ${env} failed to ${command} with args ${args}`, err);
-    message.replyText(`ssh env ${env} failed to ${command} ${args}`);
-    req.end();
-  });
-  req.exec(execString, {
-    exit : code => {
-      console.log('SSH: exit\n', code);
-      statusMessage.text = okMessage;
-      statusMessage.save();
-    },
-    err  : stdout => {
-      console.error('SSH: err\n', stdout);
-      //message.reply(stdout);
-    },
-    out  : stdout => {
-      if ( !lock ) {
-        lock = true;
-        statusMessage.text = stdout;
-        statusMessage.save().then(()=>{
-          setTimeout(()=>{lock=false;}, 300);
-        });
+  message.reply('loading...').then(statusMessage => {
+    req.on('error', err => {
+      console.error(`ssh env ${env} failed to ${command} with args ${args}`, err);
+      message.replyText(`ssh env ${env} failed to ${command} ${args}`);
+      req.end();
+    });
+    req.exec(execString, {
+      exit : code => {
+        console.log('SSH: exit\n', code);
+        statusMessage.text = <string>okMessage;
+        statusMessage.save();
+      },
+      err  : stdout => {
+        console.error('SSH: err\n', stdout);
+        //message.reply(stdout);
+      },
+      out  : stdout => {
+        if ( !lock ) {
+          lock = true;
+          statusMessage.text = <string>stdout;
+          statusMessage.save().then(()=>{
+            setTimeout(()=>{lock=false;}, 300);
+          });
+        }
+        //console.error('SSH: out');
+        //message.reply(stdout);
       }
-      //console.error('SSH: out');
-      //message.reply(stdout);
+    });
+
+    try {
+      req.start();
+    } catch (err) {
+      console.error('SSH: failed to start\n', params, '\n', err);
+      message.replyText(err.toString());
     }
   });
 
-  try {
-    req.start();
-  } catch (err) {
-    console.error('SSH: failed to start\n', params, '\n', err);
-    message.replyText(err.toString());
-  }
 };
