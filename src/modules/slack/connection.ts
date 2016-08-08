@@ -36,17 +36,19 @@ export const connection = new Connection('Slack', function () {
       return 0;
     }
 
-    const authorChannel = rtmClient.dataStore.getDMByName(authorSlack.name);
-
     let message = new SlackMessage({
       authorSlack,
-      authorChannel : authorChannel.id,
       text          : response.text,
       channel       : response.channel,
       ts            : response.ts,
       mentions      : {},
       botMention    : false
     });
+
+    const authorChannel = rtmClient.dataStore.getDMByName(authorSlack.name)
+    if ( authorChannel ) {
+      message.authorChannel = authorChannel.id;
+    }
 
     for (let match; match = regexp.exec(message.text);) {
       let user = rtmClient.dataStore.getUserById(match[1]);
