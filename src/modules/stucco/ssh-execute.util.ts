@@ -23,7 +23,7 @@ export const executeSSH = function executeSSH(message : Message,
   // stringBuffer to display last 10 strings of response
   let stringBuffer = new Array(settings.stringsInBuffer).fill('>');
 
-  message.reply(`\`\`\`${stringBuffer.join('\n')}\`\`\``).then(statusMessage => {
+  message.replyDirect(`\`\`\`${stringBuffer.join('\n')}\`\`\``).then(statusMessage => {
     req.on('error', err => {
       console.error(`ssh env ${env} failed to ${command} with args ${args}`, err);
       message.replyText(`ssh env ${env} failed to ${command} ${args}`);
