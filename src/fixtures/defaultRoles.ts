@@ -14,7 +14,10 @@ export const execute = function () : Promise {
         title : 'devops',
         auth  : auth.generateBinary([
           'general',
-          'jiraList'
+          'jiraList',
+          'envInit',
+          'envDeploy',
+          'envRestart'
         ])
       }, {title : 'devops'}),
       orm.fetchItem('role', {
