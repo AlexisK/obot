@@ -1,9 +1,9 @@
-import Hapi = require('hapi');
 import {orm} from './orm';
 import {auth} from './auth';
+import {router} from './routing';
 
 export const server = {
   orm,
   auth,
-  hapi : new Hapi.Server()
+  router
 };
