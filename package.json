@@ -6,8 +6,8 @@
   "scripts": {
     "start": "concurrently \"npm run tsc:server:w\" \"npm run tsc:client:w\" \"npm run nodemon:w\" \"npm run gulp:client:w\"",
     "tsc:w": "tsc --watch",
-    "nodemon:w":"node_modules/.bin/nodemon --watch build/app.js --delay 0.1 build/app.js",
-    "gulp:client:w":"gulp build-cli",
+    "nodemon:w": "node_modules/.bin/nodemon --watch build/app.js --delay 0.1 build/app.js",
+    "gulp:client:w": "gulp build-cli",
     "tsc:server:w": "tsc --p tsconfig.server.json --watch",
     "tsc:client:w": "tsc --p tsconfig.client.json --watch",
     "postinstall": "typings install"
@@ -33,7 +33,6 @@
     "zone.js": "^0.6.12",
     "angular2-in-memory-web-api": "0.0.15",
     "bootstrap": "^3.3.6",
-
     "@slack/client": "^3.5.3",
     "gitlab": "^1.7.0",
     "hapi": "^13.5.0",
@@ -53,6 +52,7 @@
     "gulp-concat": "^2.6.0",
     "gulp-csso": "^2.0.0",
     "gulp-less": "^3.1.0",
+    "gulp-util": "^3.0.7",
     "nodemon": "^1.10.0",
     "tslint": "^3.13.0",
     "typescript": "^1.8.10",
