@@ -1,0 +1,22 @@
+{
+  "compilerOptions" : {
+    "target"                 : "ES5",
+    "module"                 : "commonjs",
+    "emitDecoratorMetadata"  : true,
+    "experimentalDecorators" : true,
+    "sourceMap"              : true,
+    "rootDir"                : "src/client",
+    "outDir"                 : "build/client"
+  },
+  "exclude"         : [
+    "node_modules",
+    "src/core",
+    "src/server",
+    "src/modules",
+    "src/fixtures",
+    "src/app.ts",
+    "typings/globals/node"
+  ],
+  "compileOnSave"   : false,
+  "buildOnSave"     : false
+}

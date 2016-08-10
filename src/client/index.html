@@ -1,54 +1,23 @@
 <html>
 <head>
-  <style type="text/css">
-
-  </style>
+  <title>Angular 2 QuickStart</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="compiled.css">
+  <!-- 1. Load libraries -->
+  <!-- Polyfill(s) for older browsers -->
+  <script src="node_modules/core-js/client/shim.min.js"></script>
+  <script src="node_modules/zone.js/dist/zone.js"></script>
+  <script src="node_modules/reflect-metadata/Reflect.js"></script>
+  <script src="node_modules/systemjs/dist/system.src.js"></script>
+  <!-- 2. Configure SystemJS -->
+  <script src="systemjs.config.js"></script>
+  <script>
+    System.import('app').catch(function (err) { console.error(err); });
+  </script>
 </head>
+<!-- 3. Display the application -->
 <body>
-<div>
-  <h1>CLinet</h1>
-</div>
-<script type="text/javascript">
-
-  window.CONST = {
-    slack_client_id : '10527566119.67577116550',
-    domain          : 'http://alexey-stucco:3000/',
-    team            : 'T0AFHGN3H',
-    token           : localStorage.getItem('token')
-  };
-
-  function req(path, data) {
-    return new Promise((resolve, reject) => {
-      var oReq = new XMLHttpRequest();
-      oReq.addEventListener("load", resolve);
-      oReq.open("POST", `/${path}`);
-      oReq.send(JSON.stringify({
-        token : CONST.token,
-        data
-      }));
-    });
-  }
-
-  function redirectToAuth() {
-    location.replace(`https://slack.com/oauth/reflow?client_id=${CONST.slack_client_id}&scope=identity.basic&redirect_uri=${encodeURIComponent(CONST.domain + 'slack_auth/')}&team=${CONST.team}`);
-  }
-
-  function fetchAuth() {
-    return new Promise((resolve, reject) => {
-      if ( CONST.token ) {
-        resolve(CONST.token);
-      } else {
-        redirectToAuth();
-      }
-    });
-  }
-
-  fetchAuth().then(token=> {
-    req('users/list').then(users => {
-      console.log(users);
-    });
-  });
-
-</script>
+<my-app>Loading...</my-app>
 </body>
 </html>

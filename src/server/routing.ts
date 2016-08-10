@@ -19,9 +19,21 @@ router.register(Inert, () => {
 // App
 router.route({
   method  : 'GET',
-  path    : '/',
+  path    : '/{file*}',
   handler : {
-    file : path.resolve(__dirname, '../client/index.html')
+    directory: {
+      path: 'build/client/',
+      index: true
+    }
+  }
+});
+router.route({
+  method  : 'GET',
+  path    : '/node_modules/{file*}',
+  handler : {
+    directory: {
+      path: 'node_modules/'
+    }
   }
 });
 

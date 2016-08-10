@@ -1,13 +1,3 @@
-import glob = require('glob');
-import fs = require('fs');
-import path = require('path');
-// temporary solution - copy *.html to build dir
-glob('src/client/*.html', function (err, files) {
-  files.forEach(file => {
-    fs.createReadStream(`${file}`).pipe(fs.createWriteStream(`build/client/${file.split('/').slice(-1)}`));
-  });
-});
-
 import {server} from './server';
 const {orm, router} = server;
 
