@@ -7,13 +7,17 @@ export const execute = function () : Promise {
       orm.fetchItem('role', {
         title : 'member',
         auth  : auth.generateBinary([
-          'general'
+          'general',
+          'user_retrieve',
+          'role_retrieve'
         ])
       }, {title : 'member'}),
       orm.fetchItem('role', {
         title : 'devops',
         auth  : auth.generateBinary([
           'general',
+          'user_retrieve',
+          'role_retrieve',
           'jiraList',
           'envInit',
           'envDeploy',

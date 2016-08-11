@@ -6,7 +6,7 @@
 
 
 class roleManager {
-  private roles = ['all', 'general', 'manageUsers', 'manageSettings'];
+  private roles = ['all', 'general', 'manageSettings'];
 
   public addRoles(newRoles : string[]) {
     this.roles = this.roles.concat(newRoles);

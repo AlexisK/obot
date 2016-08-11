@@ -1,0 +1,6 @@
+<a *ngIf="data.type == 'link'" [routerLinkActive]="['active']" routerLink="{{ data.path }}" class="main-menu-item">{{ data.name }}</a>
+
+<div *ngIf="data.type == 'group'" class="main-menu-item" onclick="this.classList.toggle('active');">{{ data.name }}</div>
+<nav *ngIf="data.type == 'group'" class="main-menu-group">
+  <main-menu-item *ngFor="let subitem of data.items" [data]="subitem"></main-menu-item>
+</nav>

@@ -1,59 +1,67 @@
-var ormPackage = require('orm');
-var fs         = require('fs');
+const ormPackage = require('orm');
+const fs         = require('fs');
 
+import {auth} from './auth';
 import {database as config} from './settings';
 
 class ORM {
 
   private _pendingModels : any[]       = [];
   private _pendingAssociations : any[] = [];
-  private _initPromise: Promise;
+  private _initPromise : Promise;
 
   public models : any   = {};
   public instance : any = ormPackage;
   public db : any       = ormPackage.connect(`postgres://${config.user}:${config.pass}@localhost/${config.base}`);
   public modelsDeclare : Promise;
   public associationsDeclare : Promise;
+
   static ormModels : any;
+  static roleModifiers = ['retrieve', 'insert', 'update', 'delete'];
 
   public init() {
     return this._initPromise || (this._initPromise = new Promise((resolve, reject) => {
-      this.db.on('connect', err => {
+        this.db.on('connect', err => {
 
-        //Connect
-        if (err) {
-          console.error('Failed to connect db');
-          reject(err);
-          throw err;
-        }
+          //Connect
+          if (err) {
+            console.error('Failed to connect db');
+            reject(err);
+            throw err;
+          }
 
-        //Declare models
-        this.modelsDeclare = Promise.all(this._pendingModels.map(worker => new Promise(worker)));
-        this.modelsDeclare.then(() => new Promise(modelsDeclared=> {
+          //Declare models
+          this.modelsDeclare = Promise.all(this._pendingModels.map(worker => new Promise(worker)));
+          this.modelsDeclare.then(() => new Promise(modelsDeclared=> {
 
-          //Define associations
-          this.associationsDeclare = Promise.all(this._pendingAssociations.map(worker => new Promise(worker)));
-          this.associationsDeclare.then(modelsDeclared);
-        }).then(() => {
+            //Define associations
+            this.associationsDeclare = Promise.all(this._pendingAssociations.map(worker => new Promise(worker)));
+            this.associationsDeclare.then(modelsDeclared);
+          }).then(() => {
 
-          //Init
-          this.db.sync(info => {
-            if (info) {
-              console.log(info);
-            }
-            //Ready
-            console.log('ready');
-            resolve(this.db, this.models);
-          });
-        }));
+            //Init
+            this.db.sync(info => {
+              if (info) {
+                console.log(info);
+              }
+              //Ready
+              console.log('ready');
+              resolve(this.db, this.models);
+            });
+          }));
 
-      });
+        });
 
-    }));
+      }));
   }
 
 
   public defineModel(name : string, schema : any, params? : any, onModelDeclared? : Function) {
+    auth.addRoles(ORM.roleModifiers.reduce((roles, modifier) => {
+      roles.push(`${name}_${modifier}`);
+      return roles;
+    }, []));
+
     this._pendingModels.push((resolve, reject) => {
       this.models[name] = this.db.define(name, schema, params);
       resolve(this.db, this.models);
@@ -81,7 +89,7 @@ class ORM {
           data = findData || data;
 
           if (data.constructor == Number) {
-            data = {id: data};
+            data = {id : data};
           }
           if (data.id) {
             this.models[model].get(data.id, (err, result) => {
@@ -100,8 +108,15 @@ class ORM {
   }
 
 
-  public getAuth(user: any, roles: string[] ) : boolean {
-    return true;
+  public retrieve(request : any) {
+    return new Promise((resolve, reject) => {
+      this.models[request.model].find(request.filter, (err, list) => {
+        if (err) {
+          throw err;
+        }
+        resolve(list);
+      });
+    });
   }
 
 }

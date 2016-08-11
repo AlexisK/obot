@@ -1,3 +1,9 @@
-<div class="main-menu">
-  <h1>MENUS</h1>
+<div class="main-menu" *ngIf="schema">
+
+  <nav class="main-menu-items">
+
+    <main-menu-item *ngFor="let menuItem of schema" [data] = "menuItem"></main-menu-item>
+
+  </nav>
+
 </div>

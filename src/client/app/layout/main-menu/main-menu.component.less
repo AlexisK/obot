@@ -3,8 +3,15 @@
 
 .main-menu {
   position: fixed;
-  top: 0; bottom: 0; left: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
   width: @sidebar-width;
-  background-color: @grey-black;
-  color:#fff;
+  background-color: @grey-dark;
+  color: #fff;
+
+  &-items {
+    margin-top: 40px;
+    border-bottom: 1px solid @grey-dark2;
+  }
 }

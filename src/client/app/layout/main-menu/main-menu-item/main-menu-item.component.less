@@ -1,0 +1,41 @@
+@import "../../../general/colors";
+
+.main-menu-item {
+  padding: 10px 15px;
+  line-height: 20px;
+  color: @grey-light;
+  text-decoration: none;
+  border-top: 1px solid @grey-dark2;
+  cursor: pointer;
+
+  &.active {
+    background-color: @grey-dark2;
+    & + .main-menu-group {
+      display: block;
+    }
+  }
+}
+
+a.main-menu-item {
+  &:hover {
+    background-color: @grey-dark2;
+  }
+  &.active {
+    text-decoration: underline;
+  }
+}
+
+.main-menu-group {
+  display: none;
+}
+
+.main-menu-group {
+  .main-menu-item {
+    padding-left: 30px;
+  }
+
+  *:first-child > .main-menu-item {
+    border-color: @grey-light;
+  }
+
+}

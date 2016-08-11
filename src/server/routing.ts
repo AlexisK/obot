@@ -7,6 +7,7 @@ import {getRequest} from '../core/utils/http-request';
 import {scope} from '../modules/slack/connection';
 import {orm} from './orm';
 import {auth} from './auth';
+import {ConnectionService} from './connection';
 
 const {SLACK_CLIENT_ID, SLACK_CLIENT_SECRET, SLACK_REDIRECT_URI} = require('../../settings.json');
 
@@ -21,9 +22,9 @@ router.route({
   method  : 'GET',
   path    : '/{file*}',
   handler : {
-    directory: {
-      path: 'build/client/',
-      index: true
+    directory : {
+      path  : 'build/client/',
+      index : true
     }
   }
 });
@@ -31,8 +32,8 @@ router.route({
   method  : 'GET',
   path    : '/node_modules/{file*}',
   handler : {
-    directory: {
-      path: 'node_modules/'
+    directory : {
+      path : 'node_modules/'
     }
   }
 });
@@ -85,54 +86,23 @@ router.route({
 });
 
 
-// Api methods next
-function validateRequestUser(request : any) {
-  return new Promise((resolve, reject) => {
-    try {
-      let data = JSON.parse(request.payload);
-      if (!data.token) {
-        reject();
-      }
-
-      orm.models.session.find({token : data.token}).run((err, sessions) => {
-        if (err) {
-          throw(err);
-        }
-        if (!sessions.length) {
-          reject();
-          console.error('No sessions found!');
-          return 0;
-        }
-
-        sessions[0].getOwner((err, author) => {
-          if (err) {
-            throw err;
-          }
-          console.log(author.email);
-          resolve(author);
-        })
-      });
-    } catch (err) {
-      reject(err);
-    }
-  });
-}
+// Api
 
 router.route({
   method  : 'POST',
-  path    : '/users/list',
-  handler : function (request : any, reply : any) {
-    console.log(request.payload);
-    validateRequestUser(request).then(author => {
+  path    : '/api/',
+  handler : function (requestData : any, reply : any) {
+    let request = ConnectionService.parseRequestData(requestData);
 
-      return auth.checkUserAuth(author, ['manageUsers']).then(() => {
-        orm.models.user.find({}, (err, userList) => {
-          reply(JSON.stringify(userList));
-        });
+    ConnectionService.parseRequest(request).then(request => {
+      auth.checkUserAuth(request.author, [`${request.model}_${request.command}`]).then(() => {
+        orm[request.command](request).then(data => reply(JSON.stringify(data)));
       });
-
-    }).catch(()=> {
-      reply('Unauth!');
+    }).catch(err => {
+      reply(JSON.stringify({
+        exception : err.message
+      }));
     });
+
   }
 });
