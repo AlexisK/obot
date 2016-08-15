@@ -7,9 +7,10 @@
   text-decoration: none;
   border-top: 1px solid @grey-dark2;
   cursor: pointer;
+  font-size: 14px;
 
   &.active {
-    background-color: @grey-dark2;
+    //background-color: @grey-dark2;
     & + .main-menu-group {
       display: block;
     }
@@ -19,8 +20,11 @@
 a.main-menu-item {
   &:hover {
     background-color: @grey-dark2;
+    border-color: @grey-dark3;
   }
   &.active {
+    background-color: @grey-dark2;
+    border-color: @grey-dark3;
     text-decoration: underline;
   }
 }
@@ -35,7 +39,7 @@ a.main-menu-item {
   }
 
   *:first-child > .main-menu-item {
-    border-color: @grey-light;
+    //border-color: @grey-light;
   }
 
 }

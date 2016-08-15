@@ -14,7 +14,7 @@ export class ORMRolesComponent {
   }
 }
 
-mainMenuService.registerButton('/orm/roles', 'Roles', 'ORM');
+mainMenuService.registerButton('orm/roles', 'Roles', 'ORM');
 export const route = {path : 'orm/roles', component : ORMRolesComponent};
 
 
